@@ -1,5 +1,5 @@
 # 拉取 CentOS
-FROM hub.c.163.com/library/centos:latest
+FROM centos:6.9
 
 # 维护者
 MAINTAINER hano666 <hano666@gmail.com>

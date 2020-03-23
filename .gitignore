@@ -1,0 +1,10 @@
+/.idea
+/.vscode
+.env
+.DS_Store
+.gitgnore
+**/log/*
+/nginx/www
+/mysql/data
+
+

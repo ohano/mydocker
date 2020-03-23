@@ -7,6 +7,7 @@ services:
       - php
       # nginx镜像的路径
     build: ./nginx
+    privileged: true
         # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
     volumes:
       - ./nginx/www:/usr/share/nginx/html
@@ -16,7 +17,8 @@ services:
       - ./nginx/log:/var/log/nginx
         # nginx意外退出时自动重启
     restart: always
-
+    environment:
+      TZ: Asia/Shanghai
         # 映射80和443端口
     ports:
       - "80:80"
@@ -31,32 +33,59 @@ services:
     depends_on:
       - mysql
       - redis
-    build: ./php
+    build: ./php71
     ports:
       - "9000"
     networks:
       - frontend
-      - backend      
+      - backend
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
     volumes:
-      - ./php/php-fpm.conf:/usr/local/php/etc/php-fpm.conf
-      - ./php/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
-      - ./php/php.ini:/usr/local/php/etc/php.ini
-      - ./php/log:/usr/local/php/var/log
+      - ./php71/php-fpm.conf:/usr/local/php/etc/php-fpm.conf
+      - ./php71/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
+      - ./php71/php.ini:/usr/local/php/etc/php.ini
+      - ./php71/log:/usr/local/php/var/log
       - ./nginx/www:/usr/share/nginx/html
-      - ./php/crontab/crontab:/etc/crontab
+      - ./php71/crontab/crontab:/etc/crontab
     restart: always
-    container_name: centos-php
+    container_name: centos-php71
 
+  php56:
+    depends_on:
+      - mysql
+      - redis
+    build: ./php56
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "9000"
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./php56/php-fpm.conf:/usr/local/php/etc/php-fpm.conf
+      - ./php56/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
+      - ./php56/php.ini:/usr/local/php/etc/php.ini
+      - ./php56/log:/usr/local/php/var/log
+      - ./nginx/www:/usr/share/nginx/html
+      - ./php56/crontab/crontab:/etc/crontab
+    restart: always
+    container_name: centos-php56
+#    command: /usr/local/mongodb/bin/mongod --dbpath=/usr/local/mongodb/data --logpath=/usr/local/mongodb/logs --logappend  --port=27017 --fork
   # MySQL
   mysql:
-    image: hub.c.163.com/library/mysql:5.7
+    image: mysql:5.7
     ports:
       - "127.0.0.1:3306:3306"
+    privileged: true
     volumes:
       - ./mysql/data:/var/lib/mysql
       - ./mysql/my.cnf:/etc/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
     networks:
       - backend
     restart: always
@@ -73,6 +102,8 @@ services:
       - ./redis/redis.conf:/usr/local/redis/redis.conf
       - ./redis/redis.log:/usr/local/redis/redis.log
     restart: always
+    environment:
+      TZ: Asia/Shanghai
     container_name: centos-redis
 
 networks:

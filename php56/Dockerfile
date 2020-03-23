@@ -1,11 +1,11 @@
 # 拉取 CentOS7
-FROM hub.c.163.com/library/centos:latest
+FROM centos:6.9
 
 # 维护者
 MAINTAINER hano666 <hano666@gmail.com>
 
 # 设置 PHP 和redis版本
-ENV PHP_VERSION 7.1.28
+ENV PHP_VERSION 5.6.40
 ENV REDIS_VERSION 4.2.0
 # 安装定时任务
 RUN yum -y install crontabs
@@ -22,7 +22,7 @@ RUN set -x \
   && cd ~/download \
 
   # 编译 PHP
-  && wget http://cn2.php.net/distributions/php-$PHP_VERSION.tar.gz \
+  && wget https://www.php.net/distributions/php-$PHP_VERSION.tar.gz \
   && tar -zxf php-$PHP_VERSION.tar.gz \
   && cd php-$PHP_VERSION \
   && groupadd -r nginx \
@@ -71,7 +71,7 @@ RUN set -x \
   # 复制配置文件
   && cp ~/download/php-$PHP_VERSION/php.ini-production /usr/local/php/etc/php.ini \
   && cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf \
-  && cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf \
+#  && cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf \
 
   # 安装 Redis 扩展
   && cd ~/download \
@@ -83,21 +83,11 @@ RUN set -x \
   && make \
   && make install \
 
-  # 安装 Swoole 扩展
-  && cd ~/download \
-  && wget https://github.com/swoole/swoole-src/archive/v4.3.2.tar.gz \
-  && tar -zxvf v4.3.2.tar.gz \
-  && cd swoole-src-4.3.2 \
-  && /usr/local/php/bin/phpize \
-  && ./configure --with-php-config=/usr/local/php/bin/php-config \
-  && make \
-  && make install \
-
   # 安装 Xdebug 扩展
   && cd ~/download \
-  && wget http://pecl.php.net/get/xdebug-2.7.1.tgz \
-  && tar -zxvf xdebug-2.7.1.tgz \
-  && cd xdebug-2.7.1 \
+  && wget http://pecl.php.net/get/xdebug-2.5.5.tgz \
+  && tar -zxvf xdebug-2.5.5.tgz \
+  && cd xdebug-2.5.5 \
   && /usr/local/php/bin/phpize \
   && ./configure --with-php-config=/usr/local/php/bin/php-config \
   && make \

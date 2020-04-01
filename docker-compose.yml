@@ -23,6 +23,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "9090:9090"
+    expose:
+      - "9090"
     networks:
       - frontend
 
@@ -51,6 +54,29 @@ services:
       - ./php71/crontab/crontab:/etc/crontab
     restart: always
     container_name: centos-php71
+
+  php71sw:
+    depends_on:
+      - mysql
+      - redis
+    build: ./php71sw
+    ports:
+      - "9000"
+    networks:
+      - frontend
+      - backend
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./php71sw/php-fpm.conf:/usr/local/php/etc/php-fpm.conf
+      - ./php71sw/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
+      - ./php71sw/php.ini:/usr/local/php/etc/php.ini
+      - ./php71sw/log:/usr/local/php/var/log
+      - ./nginx/www:/usr/share/nginx/html
+      - ./php71sw/crontab/crontab:/etc/crontab
+    restart: always
+    container_name: centos-php71sw  
 
   php56:
     depends_on:

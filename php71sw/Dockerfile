@@ -110,7 +110,7 @@ RUN set -x \
 
   # 安装 Composer
   && cd ~/download \
-  && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+  && php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" \
   && php composer-setup.php --install-dir=/usr/local/sbin --filename=composer \
   && php -r "unlink('composer-setup.php');" \
 

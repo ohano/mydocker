@@ -1,5 +1,5 @@
 # 拉取 CentOS
-FROM centos:6.9
+FROM centos:7.2.1511
 
 # 维护者
 MAINTAINER hano666 <hano666@gmail.com>
